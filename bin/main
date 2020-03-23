@@ -1,3 +1,11 @@
 #!/usr/bin/env ruby
 
-puts "Hello World!"
+puts "Welcome player1, please enter your name?"
+player1_name = gets.chomp
+puts "Welcome player2, please enter your name?"
+player2_name = gets.chomp
+
+puts "#{player1_name} - Please enter a value between 1-9"
+player1_choice = gets.chomp.to_i
+puts "#{player2_name} - Please enter a value between 1-9"
+player2_choice = gets.chomp.to_i
