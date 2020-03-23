@@ -1,11 +1,26 @@
 #!/usr/bin/env ruby
+require_relative '../lib/game_logic.rb'
 
-puts "Welcome player1, please enter your name?"
+placeholders = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+
+game_board = Board.new
+game_board.display_board(placeholders)
+puts 'Welcome player1, please enter your name?'
 player1_name = gets.chomp
-puts "Welcome player2, please enter your name?"
+puts 'Welcome player2, please enter your name?'
 player2_name = gets.chomp
+game_logic = Logic.new
 
-puts "#{player1_name} - Please enter a value between 1-9"
+current_player = game_logic.players_turn(player1_name, player2_name)
+puts "#{current_player} - Please enter a value between 1-9"
 player1_choice = gets.chomp.to_i
-puts "#{player2_name} - Please enter a value between 1-9"
+placeholders[player1_choice - 1] = 'X'
+game_board.display_board(placeholders)
+
+next_player = game_logic.change_player(player1_name,player2_name)
+
+puts "#{next_player} - Please enter a value between 1-9"
 player2_choice = gets.chomp.to_i
+placeholders[player2_choice - 1] = '0'
+game_board.display_board(placeholders)
+puts game_logic.change_player(player1_name,player2_name)
