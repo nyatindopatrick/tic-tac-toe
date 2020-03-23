@@ -26,8 +26,21 @@ class Logic
   end
 
   def change_player(player1, player2)
-    return player1 == @@choose_player ? player2 : player1
+    next_player_move = player1 == @@choose_player ? player2 : player1
+    $playerX = next_player_move
+    $playerO = !next_player_move
+    return next_player_move
   end
+
+  # def check_empty(param1, param2)
+  #   game_symbol = nil
+  #   if param1 == " " 
+  #     game_symbol = param2
+  #   elsif param1 != " "
+  #     game_symbol =  "No free space! Choose another position."
+  #   end
+  #   game_symbol
+  # end
 end
 
 class Winner
@@ -47,15 +60,14 @@ class Winner
 
     winning_cases.each do |i|
       if player1_array == i
-        player_win = "Player - 1 wins"
+        player_win = "#{$playerX} wins"
         break
       elsif player2_array == i
-        player_win = "Player - 2 Wins"
+        player_win = "#{$playerO} Wins"
         break
       else
         nil
       end
-      # break if player_win
     end
       player_win
   end
