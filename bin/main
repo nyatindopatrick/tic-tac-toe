@@ -25,12 +25,13 @@ loop do |_i|
   end
   game_board.display_board
   win = winner.win_moves
+  puts win
   if win
     puts win
     break
   end
   count += 1
-  if count == 9
+  if count == 9 && !win
     puts 'Draw!'
     break
   end

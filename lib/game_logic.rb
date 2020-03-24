@@ -1,4 +1,4 @@
-# rubocop:disable Style/GlobalVars
+# rubocop:disable Style/GlobalVars, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 # Display Board
 class Board
   $place = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
@@ -56,11 +56,16 @@ class Winner
         player2_array << value
       end
     end
-
-    player_win = "#{@player1} wins" if winning_cases.include? player1_array
-    player_win = "#{@player2} Wins" if winning_cases.include? player2_array
-
+    if (player1_array.length <= 3) || (player2_array.length <= 3)
+      player_win = "#{@player1} wins" if winning_cases.include? player1_array
+      player_win = "#{@player2} Wins" if winning_cases.include? player2_array
+    else
+      winning_cases.each do |i|
+        player_win = "#{@player1} wins" if (player1_array + i).uniq.length == 4
+        player_win = "#{@player1} wins" if (player2_array + i).uniq.length == 4
+      end
+    end
     player_win
   end
 end
-# rubocop:enable Style/GlobalVars
+# rubocop:enable Style/GlobalVars, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
