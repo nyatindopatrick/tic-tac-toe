@@ -1,38 +1,37 @@
 #!/usr/bin/env ruby
+
 require_relative '../lib/game_logic.rb'
 
-placeholders = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-
 game_board = Board.new
-game_board.display_board(placeholders)
+game_board.display_board
 puts 'Welcome player1, please enter your name?'
 player1_name = gets.chomp
 puts 'Welcome player2, please enter your name?'
 player2_name = gets.chomp
 game_logic = Logic.new
-winner = Winner.new
+winner = Winner.new(player1_name, player2_name)
 
 count = 0
-loop do |i|
 
-  current_player = game_logic.players_turn(player1_name, player2_name)
-  puts "#{current_player} - Please enter a value between 1-9"
-  player1_choice = gets.chomp.to_i
-  placeholders[player1_choice - 1] = 'X'
-  game_board.display_board(placeholders)
-  win = winner.win_moves(placeholders)
-  p win
-
-  next_player = game_logic.change_player(player1_name,player2_name)
-
-  puts "#{next_player} - Please enter a value between 1-9"
-  player2_choice = gets.chomp.to_i
-  placeholders[player2_choice - 1] = 'O'
-  game_board.display_board(placeholders)
-  win = winner.win_moves(placeholders)
-  p win
-
+loop do |_i|
+  current_player = count.even? ? player1_name : player2_name
+  user_data = game_logic.askuser(current_player)
+  player_sign = current_player == player1_name ? 'X' : 'O'
+  res = game_logic.update_board(user_data, player_sign)
+  if res
+    puts res
+    user_data = game_logic.askuser(current_player)
+    game_logic.update_board(user_data, player_sign)
+  end
+  game_board.display_board
+  win = winner.win_moves
+  if win
+    puts win
+    break
+  end
   count += 1
-  break if win || count == 4
-
+  if count == 9
+    puts 'Draw!'
+    break
+  end
 end
