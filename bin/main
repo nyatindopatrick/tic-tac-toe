@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+# getting inputs for player's name 
+puts 'Welcome player1, please enter your name?'
+player1_name = gets.chomp
+puts 'Welcome player2, please enter your name?'
+player2_name = gets.chomp
+#taking values for the player's choice
+puts "#{player1_name} - Please enter a value between 1-9"
+player1_choice = gets.chomp.to_i
+puts "#{player2_name} - Please enter a value between 1-9"
+player2_choice = gets.chomp.to_i
+
+place = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '] # display each position of the board
+
+def display_board #displaying the game board
+  puts "\t -------------"
+  puts "\t | #{place[0]} | #{place[1]} | #{place[2]} |"
+  puts "\t -------------"
+  puts "\t | #{place[3]} | #{place[4]} | #{place[5]} |"
+  puts "\t -------------"
+  puts "\t | #{place[6]} | #{place[7]} | #{place[8]} |"
+  puts "\t -------------"
+end
+# informs player if selected move is invalid / updated gaming board after player move
+def update_board(param1, param2) 
+  res = nil
+  if place[param1 - 1] == ' '
+    place[param1 - 1] = param2
+  else
+    res = 'Spot unavailable. Please choose another spot.'
+  end
+  res
+end
+
+
+def win_moves # informs player is selected move is a winning move
+  player1_array = [] #storing the choices of player1
+  player2_array = [] #storing the choices of player2
+
+  winning_cases = [[0, 1, 2], [0, 4, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],
+  [2, 4, 6], [3, 4, 5], [6, 7, 8]]
+  place.each_with_index do |index, value| #visual representation of each move on the board
+    if index == 'X'
+      player1_array << value
+    elsif index == 'O'
+      player2_array << value
+    end
+  end
+end
+
+def game # informs player if selected move is a draw move 
+  count = 0
+  loop do |i|
+    current_player = count.even? ? player1_name : player2_name
+    user_data = game_logic.askuser(current_player)
+    player_sign = current_player == player1_name ? 'X' : 'O'# inside this loop the player's turn is changing 
+    update_board(user_data, player_sign)
+
+    count += 1
+    if count == place.length
+      puts "Draw"
+      break
+    end
+  end
+end
