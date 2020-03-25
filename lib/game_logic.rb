@@ -51,3 +51,4 @@ class Board
 end
 
 # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
