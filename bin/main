@@ -51,7 +51,6 @@ def play(ask_user, play_again)
       puts 'Play again? (Y/N)'
       user_val = gets.chomp.downcase
       user_val == 'n' ? break : play_again.call(user_val)
-
     end
 
     if count == 9 && !win
@@ -63,4 +62,3 @@ def play(ask_user, play_again)
 end
 
 play(prompt_user, replay_game)
-
