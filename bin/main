@@ -2,30 +2,36 @@
 
 require_relative '../lib/game_logic.rb'
 
-game_board = Board.new
-game_board.display_board
 puts 'Welcome player1, please enter your name?'
 player1_name = gets.chomp
 puts 'Welcome player2, please enter your name?'
 player2_name = gets.chomp
+
+game_board = Board.new(player1_name, player2_name)
 game_logic = Logic.new
-winner = Winner.new(player1_name, player2_name)
+puts game_board.display_board
+def askuser(param)
+  user_prompt = "#{param} - Please enter a value between 1-9"
+  puts user_prompt
+  player1_choice = gets.chomp.to_i
+  player1_choice
+end
 
 count = 0
 
 loop do |_i|
   current_player = count.even? ? player1_name : player2_name
-  user_data = game_logic.askuser(current_player)
+  user_data = askuser(current_player)
   player_sign = current_player == player1_name ? 'X' : 'O'
   res = game_logic.update_board(user_data, player_sign)
   if res
     puts res
-    user_data = game_logic.askuser(current_player)
+    user_data = askuser(current_player)
     game_logic.update_board(user_data, player_sign)
   end
-  game_board.display_board
-  win = winner.win_moves
-  puts win
+  puts game_board.display_board
+  win = game_board.win_moves(current_player)
+
   if win
     puts win
     break
