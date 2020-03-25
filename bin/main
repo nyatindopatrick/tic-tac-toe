@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
+# rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
 
 require_relative '../lib/game_logic.rb'
 
-prompt_user = ->(param) do
+prompt_user = lambda do |param|
   user_prompt = "#{param} - Please enter a value between 1-9"
   puts user_prompt
   player1_choice = gets.chomp.to_i
@@ -13,19 +14,18 @@ prompt_user = ->(param) do
   end
 end
 
-replay_game = ->(usr) do
-  if usr == 'y'
-    play(prompt_user, replay_game)
-  else
-    puts 'Please reply with either Y or N'
-    replay_game.call(usr)
-  end
+end_game = lambda do |par|
+  puts par
+  puts 'Play again? (Y/N)'
+  user_in = gets.chomp.downcase
+  end_game.call(par) unless %w[y and n].include?(user_in)
+  return user_in
 end
 
-def play(ask_user, play_again)
-  puts 'Welcome player1, please enter your name?'
+def play(ask_user, end_lambda)
+  puts 'Welcome player 1, please enter your name?'
   player1_name = gets.chomp
-  puts 'Welcome player2, please enter your name?'
+  puts 'Welcome player 2, please enter your name?'
   player2_name = gets.chomp
   game_board = Board.new(player1_name, player2_name)
 
@@ -43,22 +43,12 @@ def play(ask_user, play_again)
     end
     puts game_board.display_board
     win = game_board.win_moves(current_player)
-
     count += 1
 
-    if win
-      puts win
-      puts 'Play again? (Y/N)'
-      user_val = gets.chomp.downcase
-      user_val == 'n' ? break : play_again.call(user_val)
-    end
+    return end_lambda.call(win) == 'n' ? break : play(ask_user, end_lambda) if win
 
-    if count == 9 && !win
-      puts 'Draw!'
-      user_val = gets.chomp.downcase
-      user_val == 'n' ? break : play_again.call(user_val)
-    end
+    return end_lambda.call('Draw!') == 'n' ? break : play(ask_user, end_lambda) if count == 9 && !win
   end
 end
-
-play(prompt_user, replay_game)
+# rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
+play(prompt_user, end_game)
