@@ -2,43 +2,64 @@
 
 require_relative '../lib/game_logic.rb'
 
-puts 'Welcome player1, please enter your name?'
-player1_name = gets.chomp
-puts 'Welcome player2, please enter your name?'
-player2_name = gets.chomp
-
-game_board = Board.new(player1_name, player2_name)
-game_logic = Logic.new
-puts game_board.display_board
-def askuser(param)
+prompt_user = ->(param) do
   user_prompt = "#{param} - Please enter a value between 1-9"
   puts user_prompt
   player1_choice = gets.chomp.to_i
-  player1_choice
+  if player1_choice.between?(1, 9)
+    player1_choice
+  else
+    prompt_user.call(param)
+  end
 end
 
-count = 0
-
-loop do |_i|
-  current_player = count.even? ? player1_name : player2_name
-  user_data = askuser(current_player)
-  player_sign = current_player == player1_name ? 'X' : 'O'
-  res = game_logic.update_board(user_data, player_sign)
-  if res
-    puts res
-    user_data = askuser(current_player)
-    game_logic.update_board(user_data, player_sign)
+replay_game = ->(usr) do
+  if usr == 'y'
+    play(prompt_user, replay_game)
+  else
+    puts 'Please reply with either Y or N'
+    replay_game.call(usr)
   end
+end
+
+def play(ask_user, play_again)
+  puts 'Welcome player1, please enter your name?'
+  player1_name = gets.chomp
+  puts 'Welcome player2, please enter your name?'
+  player2_name = gets.chomp
+  game_board = Board.new(player1_name, player2_name)
+
   puts game_board.display_board
-  win = game_board.win_moves(current_player)
+  count = 0
+  loop do |_i|
+    current_player = count.even? ? player1_name : player2_name
+    user_data = ask_user.call(current_player)
+    player_sign = current_player == player1_name ? 'X' : 'O'
+    res = game_board.update_board(user_data, player_sign)
+    if res
+      puts res
+      user_data = ask_user.call(current_player)
+      game_board.update_board(user_data, player_sign)
+    end
+    puts game_board.display_board
+    win = game_board.win_moves(current_player)
 
-  if win
-    puts win
-    break
-  end
-  count += 1
-  if count == 9 && !win
-    puts 'Draw!'
-    break
+    count += 1
+
+    if win
+      puts win
+      puts 'Play again? (Y/N)'
+      user_val = gets.chomp.downcase
+      user_val == 'n' ? break : play_again.call(user_val)
+
+    end
+
+    if count == 9 && !win
+      puts 'Draw!'
+      user_val = gets.chomp.downcase
+      user_val == 'n' ? break : play_again.call(user_val)
+    end
   end
 end
+
+play(prompt_user, replay_game)
