@@ -8,37 +8,48 @@ puts 'Welcome player2, please enter your name?'
 player2_name = gets.chomp
 
 game_board = Board.new(player1_name, player2_name)
-game_logic = Logic.new
+
 puts game_board.display_board
 def askuser(param)
   user_prompt = "#{param} - Please enter a value between 1-9"
   puts user_prompt
   player1_choice = gets.chomp.to_i
+  # unless player1_choice == (1..9)
+  #   puts 'Invalid Property. Please choose between 1-9'
+  #   player1_choice = gets.chomp.to_i
+  # else
+  # end
   player1_choice
 end
 
 count = 0
+current_player = count.even? ? player1_name : player2_name
+user_data = askuser(current_player)
 
-loop do |_i|
-  current_player = count.even? ? player1_name : player2_name
-  user_data = askuser(current_player)
-  player_sign = current_player == player1_name ? 'X' : 'O'
-  res = game_logic.update_board(user_data, player_sign)
-  if res
-    puts res
-    user_data = askuser(current_player)
-    game_logic.update_board(user_data, player_sign)
-  end
-  puts game_board.display_board
-  win = game_board.win_moves(current_player)
+  askuser(current_player) if !user_data.between?(1,9)
 
-  if win
-    puts win
-    break
+  loop do |_i|
+      player_sign = current_player == player1_name ? 'X' : 'O'
+      p current_player
+      p user_data
+      res1 = game_board.update_board(user_data, player_sign)
+      p res1
+      if res1
+        puts res1
+        user_data = askuser(current_player)
+        game_board.update_board(user_data, player_sign)
+      end
+        puts game_board.display_board
+        win = game_board.win_moves(current_player)
+        count += 1
+
+      if win
+        puts win
+        break
+      end
+      if count == 9 && !win
+        puts 'Draw!'
+        break
+      end
   end
-  count += 1
-  if count == 9 && !win
-    puts 'Draw!'
-    break
-  end
-end
+
