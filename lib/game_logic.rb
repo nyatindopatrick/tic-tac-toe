@@ -1,5 +1,5 @@
-# rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 # Display Board
+require_relative './helper_module.rb'
 class Board
   def initialize(player1, player2)
     @player1 = player1
@@ -28,9 +28,9 @@ class Board
     temp
   end
 
-  def check_winner(player,param2)
+  def check_winner(player, param2)
     winning_cases = [[0, 1, 2], [0, 4, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [2, 4, 6], [3, 4, 5], [6, 7, 8]]
+                     [2, 4, 6], [3, 4, 5], [6, 7, 8]]
     player_win = nil
     if param2.length <= 3
       player_win = "#{player} wins" if winning_cases.include? param2
@@ -42,17 +42,15 @@ class Board
     player_win
   end
 
-
-  # updating the board
-  def update_board(param1, param2)
-    res = nil
-    if @board[param1 - 1] == ' '
-      @board[param1 - 1] = param2
+  def empty_space(user_input, param2)
+    unless @board[user_input - 1] == ' ' 
+      Helper.prompt_users(param2)
     else
-      res = 'Spot unavailable. Please choose another spot.'
+      user_input 
     end
-    res
+  end
+  
+  def update_board(param1, param2)
+      @board[param1 - 1] = param2
   end
 end
-
-# rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
