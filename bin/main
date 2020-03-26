@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
+
 require_relative '../lib/game_logic.rb'
 require_relative '../lib/helper_module.rb'
 require_relative '../lib/game_play.rb'
-
+# rubocop:disable Metrics/CyclomaticComplexity
 def play
   inputs = Helper.welcome_player
   game_board = Board.new(inputs[0], inputs[1])
@@ -10,12 +11,10 @@ def play
   count = 0
   loop do |_i|
     current_player = count.even? ? inputs[0] : inputs[1]
-    ask_user = Helper.prompt_users(current_player)
+    ask_user = game_board.empty_space(current_player)
     player = Play.new(current_player)
-    check_available = game_board.empty_space(ask_user, current_player)
-    ask_user if check_available == nil
-    check_available ? game_signs = player.player_sign(inputs[0]) : ask_user
-    puts res = game_board.update_board(check_available, game_signs) if check_available != nil
+    game_signs = player.player_sign(inputs[0])
+    game_board.update_board(ask_user, game_signs)
     puts game_board.display_board
     win_move = game_board.win_moves(current_player)
     win = game_board.check_winner(current_player, win_move)
@@ -24,4 +23,5 @@ def play
     return Helper.end_game('Draw!') == 'n' ? break : play if count == 9 && !win
   end
 end
+# rubocop:enable Metrics/CyclomaticComplexity
 play

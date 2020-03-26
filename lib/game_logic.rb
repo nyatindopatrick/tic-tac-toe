@@ -42,15 +42,16 @@ class Board
     player_win
   end
 
-  def empty_space(user_input, param2)
-    unless @board[user_input - 1] == ' ' 
-      Helper.prompt_users(param2)
+  def empty_space(param2)
+    input_message = Helper.prompt_users(param2)
+    if @board[input_message - 1] == ' '
+      input_message
     else
-      user_input 
+      empty_space(param2)
     end
   end
-  
+
   def update_board(param1, param2)
-      @board[param1 - 1] = param2
+    @board[param1 - 1] = param2
   end
 end
