@@ -1,37 +1,27 @@
 #!/usr/bin/env ruby
 
 require_relative '../lib/game_logic.rb'
-
-game_board = Board.new
-game_board.display_board
-puts 'Welcome player1, please enter your name?'
-player1_name = gets.chomp
-puts 'Welcome player2, please enter your name?'
-player2_name = gets.chomp
-game_logic = Logic.new
-winner = Winner.new(player1_name, player2_name)
-
-count = 0
-
-loop do |_i|
-  current_player = count.even? ? player1_name : player2_name
-  user_data = game_logic.askuser(current_player)
-  player_sign = current_player == player1_name ? 'X' : 'O'
-  res = game_logic.update_board(user_data, player_sign)
-  if res
-    puts res
-    user_data = game_logic.askuser(current_player)
-    game_logic.update_board(user_data, player_sign)
-  end
-  game_board.display_board
-  win = winner.win_moves
-  if win
-    puts win
-    break
-  end
-  count += 1
-  if count == 9
-    puts 'Draw!'
-    break
+require_relative '../lib/helper_module.rb'
+require_relative '../lib/game_play.rb'
+# rubocop:disable Metrics/CyclomaticComplexity
+def play
+  inputs = Helper.welcome_player
+  game_board = Board.new(inputs[0], inputs[1])
+  puts game_board.display_board
+  count = 0
+  loop do |_i|
+    current_player = count.even? ? inputs[0] : inputs[1]
+    ask_user = game_board.empty_space(current_player)
+    player = Play.new(current_player)
+    game_signs = player.player_sign(inputs[0])
+    game_board.update_board(ask_user, game_signs)
+    puts game_board.display_board
+    win_move = game_board.win_moves(current_player)
+    win = game_board.check_winner(current_player, win_move)
+    count += 1
+    return Helper.end_game(win) == 'n' ? break : play if win
+    return Helper.end_game('Draw!') == 'n' ? break : play if count == 9 && !win
   end
 end
+# rubocop:enable Metrics/CyclomaticComplexity
+play

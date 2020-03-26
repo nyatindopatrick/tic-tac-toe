@@ -1,68 +1,57 @@
-# rubocop:disable Style/GlobalVars
 # Display Board
+require_relative './helper_module.rb'
 class Board
-  $place = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-
-  def display_board
-    puts "\t -------------"
-    puts "\t | #{$place[0]} | #{$place[1]} | #{$place[2]} |"
-    puts "\t -------------"
-    puts "\t | #{$place[3]} | #{$place[4]} | #{$place[5]} |"
-    puts "\t -------------"
-    puts "\t | #{$place[6]} | #{$place[7]} | #{$place[8]} |"
-    puts "\t -------------"
-  end
-end
-
-# Game logic
-class Logic
-  # Prompt user to enter value
-  def askuser(param)
-    user_prompt = "#{param} - Please enter a value between 1-9"
-    puts user_prompt
-    player1_choice = gets.chomp.to_i
-    player1_choice
-  end
-
-  def update_board(param1, param2)
-    res = nil
-    if $place[param1 - 1] == ' '
-      $place[param1 - 1] = param2
-    else
-      res = 'Spot unavailable. Please choose another spot.'
-    end
-    res
-  end
-end
-
-# Determining the winner
-class Winner
   def initialize(player1, player2)
     @player1 = player1
     @player2 = player2
+    @board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
   end
 
-  def win_moves
-    player1_array = []
-    player2_array = []
+  def display_board
+    <<-GAME
+    \t -------------
+    \t | #{@board[0]} | #{@board[1]} | #{@board[2]} |
+    \t -------------
+    \t | #{@board[3]} | #{@board[4]} | #{@board[5]} |
+    \t -------------
+    \t | #{@board[6]} | #{@board[7]} | #{@board[8]} |
+    \t -------------
+    GAME
+  end
+
+  # Checking and eturning the winner
+  def win_moves(player)
+    temp = []
+    @board.each_with_index do |val, i|
+      player == @player1 ? (temp << i if val == 'X') : (temp << i if val == 'O')
+    end
+    temp
+  end
+
+  def check_winner(player, param2)
     winning_cases = [[0, 1, 2], [0, 4, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],
                      [2, 4, 6], [3, 4, 5], [6, 7, 8]]
     player_win = nil
-
-    $place.each_with_index do |index, value|
-      if index == 'X'
-        player1_array << value
-      elsif index == 'O'
-        player2_array << value
+    if param2.length <= 3
+      player_win = "#{player} wins" if winning_cases.include? param2
+    else
+      winning_cases.each do |j|
+        player_win = "#{player} wins" if (param2 + j).uniq.length == 4
       end
     end
-
-    player_win = "#{@player1} wins" if winning_cases.include? player1_array
-    player_win = "#{@player2} Wins" if winning_cases.include? player2_array
-
     player_win
   end
+
+  def empty_space(param2)
+    input_message = Helper.prompt_users(param2)
+    if @board[input_message - 1] == ' '
+      input_message
+    else
+      empty_space(param2)
+    end
+  end
+
+  def update_board(param1, param2)
+    @board[param1 - 1] = param2
+  end
 end
-# rubocop:enable Style/GlobalVars
-
-

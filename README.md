@@ -17,7 +17,7 @@
 
 - You have to clone / download the repository to your computer so you can 
   have it locally.
-- [Click here to download it](https://github.com/nyatindopatrick/tic-tac-toe/archive/development.zip)
+- [Click here to download it](https://github.com/nyatindopatrick/tic-tac-toe/archive/game_logic.zip)
 - Enter bin folder and double-click the main file to run the game in your terminal.
 
 <img width="311" alt="Screenshot 2020-03-24 at 11 37 15 AM" src="https://user-images.githubusercontent.com/50610396/77410627-d5b9df00-6dc3-11ea-9172-8ee76fe4f208.png">
@@ -50,4 +50,4 @@ Feel free to check the [issues page](https://github.com/nyatindopatrick/tic-tac-
 
 ## 📝 License
 
-This project is [MIT](lic.url) licensed.
+This project is [MIT](https://github.com/nyatindopatrick/tic-tac-toe/blob/readme_game_instructions/LICENSE) licensed.
