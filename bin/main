@@ -42,7 +42,8 @@ def play(ask_user, end_lambda)
       game_board.update_board(user_data, player_sign)
     end
     puts game_board.display_board
-    win = game_board.win_moves(current_player)
+    win_move = game_board.win_moves(current_player)
+    win = game_board.check_winner(current_player, win_move)
     count += 1
 
     return end_lambda.call(win) == 'n' ? break : play(ask_user, end_lambda) if win
