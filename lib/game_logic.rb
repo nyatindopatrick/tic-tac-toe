@@ -18,7 +18,7 @@ class Board
     GAME
   end
 
-  # Checking and eturning the winner
+  # Checking and turning the winner
   def win_moves(player)
     temp = []
     @board.each_with_index do |val, i|
