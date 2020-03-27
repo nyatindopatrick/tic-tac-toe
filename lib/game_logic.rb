@@ -1,5 +1,4 @@
 # Display Board
-require_relative './helper_module.rb'
 class Board
   def initialize(player1, player2)
     @player1 = player1
@@ -42,13 +41,8 @@ class Board
     player_win
   end
 
-  def empty_space(param2)
-    input_message = Helper.prompt_users(param2)
-    if @board[input_message - 1] == ' '
-      input_message
-    else
-      empty_space(param2)
-    end
+  def check_blank(param)
+    @board[param - 1] == ' '
   end
 
   def update_board(param1, param2)
