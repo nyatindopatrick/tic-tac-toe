@@ -1,27 +1,65 @@
 #!/usr/bin/env ruby
 require_relative '../lib/game_logic.rb'
-require_relative '../lib/helper_module.rb'
 require_relative '../lib/game_play.rb'
+# rubocop:disable Metrics/CyclomaticComplexity
+class Inputs
+  def initialize(player1, player2, board)
+    @player1 = player1
+    @player2 = player2
+    @board = board
+  end
 
-def play
-  inputs = Helper.welcome_player
-  game_board = Board.new(inputs[0], inputs[1])
+  def prompt_users(param)
+    user_prompt = "#{param} - Please enter a value between 1-9"
+    puts user_prompt
+    player1_choice = gets.chomp.to_i
+    var = @board
+    choice = var.check_blank(player1_choice)
+    if !choice
+      prompt_users(param)
+    elsif player1_choice.between?(1, 9)
+      player1_choice
+    else
+      prompt_users(param)
+    end
+  end
+
+  def end_game(par)
+    puts par
+    puts 'Play again? (Y/N)'
+    user_in = gets.chomp.downcase
+    end_game(par) unless %w[y and n].include?(user_in)
+    user_in
+  end
+end
+
+players_name = lambda do
+  puts 'Welcome player 1, please enter your name?'
+  player1 = gets.chomp
+  puts 'Welcome player 2, please enter your name?'
+  player2 = gets.chomp
+  [player1, player2]
+end
+
+def play(names)
+  name = names.call
+  game_board = Board.new(name[0], name[1])
+  game = Inputs.new(name[0], name[1], game_board)
   puts game_board.display_board
   count = 0
   loop do |_i|
-    current_player = count.even? ? inputs[0] : inputs[1]
-    ask_user = Helper.prompt_users(current_player)
+    current_player = count.even? ? name[0] : name[1]
+    ask_user = game.prompt_users(current_player)
     player = Play.new(current_player)
-    check_available = game_board.empty_space(ask_user, current_player)
-    ask_user if check_available == nil
-    check_available ? game_signs = player.player_sign(inputs[0]) : ask_user
-    puts res = game_board.update_board(check_available, game_signs) if check_available != nil
+    game_signs = player.player_sign(name[0])
+    game_board.update_board(ask_user, game_signs)
     puts game_board.display_board
     win_move = game_board.win_moves(current_player)
     win = game_board.check_winner(current_player, win_move)
     count += 1
-    return Helper.end_game(win) == 'n' ? break : play if win
-    return Helper.end_game('Draw!') == 'n' ? break : play if count == 9 && !win
+    return game.end_game(win) == 'n' ? break : play(names) if win
+    return game.end_game('Draw!') == 'n' ? break : play(names) if count == 9 && !win
   end
 end
-play
+# rubocop:enable Metrics/CyclomaticComplexity
+play(players_name)
